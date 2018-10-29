@@ -119,6 +119,7 @@
     <Compile Include="CallRtcTask.cs" />
     <Compile Include="Helpers\Current.cs" />
     <Compile Include="Helpers\VccCallHelper.cs" />
+    <Compile Include="Log.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

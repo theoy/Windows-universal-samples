@@ -14,6 +14,7 @@ using Windows.ApplicationModel.Activation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
+using VoipTasks;
 
 namespace SDKTemplate
 { 
@@ -39,6 +40,7 @@ namespace SDKTemplate
         /// <param name="e">Details about the launch request and process.</param>
         protected override void OnLaunched(LaunchActivatedEventArgs e)
         {
+            Log.WriteLine($"App launching, kind={e.Kind}");
 
     #if DEBUG
             if (System.Diagnostics.Debugger.IsAttached)
@@ -112,7 +114,32 @@ namespace SDKTemplate
             throw new Exception("Failed to load Page " + e.SourcePageType.FullName);
         }
 
-        // Add any application contructor code in here.
-        partial void Construct();
+        void Construct()
+        {
+            LeavingBackground += App_LeavingBackground;
+            EnteredBackground += App_EnteredBackground;
+            Suspending += App_Suspending;
+            Resuming += App_Resuming;
+        }
+
+        void App_EnteredBackground(object sender, EnteredBackgroundEventArgs e)
+        {
+            Log.WriteLine($"App entered background");
+        }
+
+        void App_LeavingBackground(object sender, LeavingBackgroundEventArgs e)
+        {
+            Log.WriteLine($"App leaving background");
+        }
+
+        void App_Suspending(object sender, SuspendingEventArgs e)
+        {
+            Log.WriteLine($"Windows requested suspension, deadline={e.SuspendingOperation.Deadline}");
+        }
+
+        void App_Resuming(object sender, object e)
+        {
+            Log.WriteLine($"App resuming after previous suspended state");
+        }
     }
 }

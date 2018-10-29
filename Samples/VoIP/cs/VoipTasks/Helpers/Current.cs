@@ -133,6 +133,7 @@ namespace VoipTasks.Helpers
                 if (deferal != null)
                 {
                     deferal.Complete();
+                    Log.WriteLine($"Sent response and completed AppService request of type='{request?.Message[BackgroundOperation.NewBackgroundRequest]}'");
                     deferal = null;
                 }
 
@@ -163,6 +164,7 @@ namespace VoipTasks.Helpers
             if (deferal != null)
             {
                 deferal.Complete();
+                Log.WriteLine("Sent response and completed GetCallDuration request.");
             }
 
             return true;
@@ -188,6 +190,7 @@ namespace VoipTasks.Helpers
                 if (deferal != null)
                 {
                     deferal.Complete();
+                    Log.WriteLine("Sent response and completed EndCall request.");
                 }
             }
             finally
@@ -222,6 +225,7 @@ namespace VoipTasks.Helpers
                 if (deferral != null)
                 {
                     deferral.Complete();
+                    Log.WriteLine("Ended call / completed deferral for CallRtcTask");
                 }
 
             }

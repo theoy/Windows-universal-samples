@@ -20,11 +20,14 @@ namespace VoipTasks
 {
     public sealed class AppService : IBackgroundTask
     {
+        Guid instanceId;
         AppServiceConnection _connection;
         BackgroundTaskDeferral _deferral;
 
         public void Run(IBackgroundTaskInstance taskInstance)
         {
+            instanceId = taskInstance.InstanceId;
+            Log.WriteLine($"Activating VoipTasks.AppService '{instanceId}'");
             AppServiceTriggerDetails triggerDetail = taskInstance.TriggerDetails as AppServiceTriggerDetails;
             _deferral = taskInstance.GetDeferral();
 
@@ -46,6 +49,7 @@ namespace VoipTasks
             {
                 var request = args.Request;
                 var message = request.Message;
+                Log.WriteLine($"Received request on VoipTasks.AppService '{instanceId}', type='{message[BackgroundOperation.NewBackgroundRequest]}'");
                 if (message.ContainsKey(BackgroundOperation.NewBackgroundRequest))
                 {
                     switch ((BackgroundRequest)message[BackgroundOperation.NewBackgroundRequest])
@@ -98,7 +102,12 @@ namespace VoipTasks
         {
             if (_deferral != null)
             {
+                Log.WriteLine($"Windows requested cancel for VoipTasks.AppService '{instanceId}' (reason={reason}), cancelling.");
                 _deferral.Complete();
+            }
+            else
+            {
+                Log.WriteLine($"Windows requested cancel for VoipTasks.AppService '{instanceId}' (reason={reason}), ignoring because already completed.");
             }
         }
 
