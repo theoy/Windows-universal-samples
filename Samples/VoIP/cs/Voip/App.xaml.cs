@@ -14,6 +14,7 @@ using Windows.ApplicationModel.Activation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
+using SDKTemplate.Helpers;
 using VoipTasks;
 
 namespace SDKTemplate
@@ -122,14 +123,19 @@ namespace SDKTemplate
             Resuming += App_Resuming;
         }
 
-        void App_EnteredBackground(object sender, EnteredBackgroundEventArgs e)
+        async void App_EnteredBackground(object sender, EnteredBackgroundEventArgs e)
         {
             Log.WriteLine($"App entered background");
+            using (e.GetDeferral())
+            {
+                await VoipCallHelper.OnEnteredBackground();
+            }
         }
 
         void App_LeavingBackground(object sender, LeavingBackgroundEventArgs e)
         {
             Log.WriteLine($"App leaving background");
+            VoipCallHelper.OnLeavingBackground();
         }
 
         void App_Suspending(object sender, SuspendingEventArgs e)
