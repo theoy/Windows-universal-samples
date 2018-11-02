@@ -260,19 +260,22 @@ namespace VoipTasks.Helpers
 
         public static void StartAudio()
         {
-            lock (_lock)
-            {
-                // Initialize transport
-                transportController = new BackEndTransport(); // local
+            //Skip/Disable Audio Backend, it currently has an access violation when
+            //running on Windows 10 Mobile (v10.0.15254.538)
 
-                // Initialize audio controller
-                audioController = new BackEndAudio();
+            //lock (_lock)
+            //{
+            //    // Initialize transport
+            //    transportController = new BackEndTransport(); // local
 
-                // Set the transport for audio
-                audioController.SetTransport(transportController);
+            //    // Initialize audio controller
+            //    audioController = new BackEndAudio();
 
-                audioController.Start();
-            }
+            //    // Set the transport for audio
+            //    audioController.SetTransport(transportController);
+
+            //    audioController.Start();
+            //}
         }
 
         public static void StopAudio()
