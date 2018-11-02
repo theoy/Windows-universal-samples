@@ -14,6 +14,7 @@ using Windows.ApplicationModel.Activation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
+using Voip.Helpers;
 using VoipTasks;
 
 namespace SDKTemplate
@@ -140,6 +141,18 @@ namespace SDKTemplate
         void App_Resuming(object sender, object e)
         {
             Log.WriteLine($"App resuming after previous suspended state");
+        }
+
+        protected override void OnBackgroundActivated(BackgroundActivatedEventArgs args)
+        {
+            var taskInstance = args.TaskInstance;
+            Log.WriteLine($"App OnBackgroundActivated, RegistrationName='{taskInstance?.Task?.Name}', Id={taskInstance?.InstanceId}");
+            base.OnBackgroundActivated(args);
+
+            if (KeepAliveService.IsKeepAliveTask(taskInstance))
+            {
+                KeepAliveService.RunKeepAliveTask(taskInstance);
+            }
         }
     }
 }

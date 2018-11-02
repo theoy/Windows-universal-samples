@@ -99,6 +99,7 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Helpers\AppServiceHelper.cs" />
+    <Compile Include="Helpers\KeepAliveService.cs" />
     <Compile Include="Helpers\VoipCallHelper.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>

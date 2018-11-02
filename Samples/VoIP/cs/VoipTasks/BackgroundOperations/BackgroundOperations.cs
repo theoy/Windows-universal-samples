@@ -41,6 +41,8 @@ namespace VoipTasks.BackgroundOperations
 
     public static class BackgroundOperation
     {
+        public static string KeepAliveServiceTaskName => "Voip.KeepAliveService";
+
         public static String AppServiceName
         {
             get { return _appServiceName; }

@@ -62,20 +62,20 @@ namespace VoipTasks.Helpers
             }
         }
 
-        public static BackgroundTaskDeferral RTCTaskDeferral
+        public static CallRtcTask RTCTask
         {
             set
             {
                 lock (_lock)
                 {
-                    _rtcTaskDeferral = value;
+                    _rtcTask = value;
                 }
             }
             get
             {
                 lock (_lock)
                 {
-                    return _rtcTaskDeferral;
+                    return _rtcTask;
                 }
             }
         }
@@ -204,7 +204,7 @@ namespace VoipTasks.Helpers
         public static void EndCall()
         {
             VoipPhoneCall call = VoipCall;
-            BackgroundTaskDeferral deferral = RTCTaskDeferral;
+            CallRtcTask rtcTask = RTCTask;
 
             try
             {
@@ -222,12 +222,7 @@ namespace VoipTasks.Helpers
 
             try
             {
-                if (deferral != null)
-                {
-                    deferral.Complete();
-                    Log.WriteLine("Ended call / completed deferral for CallRtcTask");
-                }
-
+                rtcTask?.CompleteNormally();
             }
             catch
             {
@@ -236,7 +231,7 @@ namespace VoipTasks.Helpers
             finally
             {
                 VoipCall = null;
-                RTCTaskDeferral = null;
+                RTCTask = null;
             }
         }
 
@@ -299,7 +294,7 @@ namespace VoipTasks.Helpers
         private static AppServiceDeferral _appDeferral = null;
         private static VoipPhoneCall _voipCall = null;
         private static VccCallHelper _vccCallHelper = new VccCallHelper();
-        private static BackgroundTaskDeferral _rtcTaskDeferral = null;
+        private static CallRtcTask _rtcTask = null;
         private static BackEndTransport transportController;
         private static BackEndAudio audioController;
     }
