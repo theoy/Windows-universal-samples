@@ -9,6 +9,7 @@
 //
 //*********************************************************
 using System;
+using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.UI.Xaml;
@@ -24,6 +25,12 @@ namespace SDKTemplate
     /// </summary>
     sealed partial class App : Application
     {
+        static bool ProlongSuspending = true;
+        /// <summary>
+        /// If ProlongSuspending is enabled, we will prolong until (Deadline - Buffer)
+        /// </summary>
+        static readonly TimeSpan Buffer = TimeSpan.FromSeconds(1.0);
+
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
@@ -133,9 +140,34 @@ namespace SDKTemplate
             Log.WriteLine($"App leaving background");
         }
 
-        void App_Suspending(object sender, SuspendingEventArgs e)
+        async void App_Suspending(object sender, SuspendingEventArgs e)
         {
             Log.WriteLine($"Windows requested suspension, deadline={e.SuspendingOperation.Deadline}");
+
+            if (!ProlongSuspending)
+            {
+                Log.WriteLine("Completing Suspending handler (signaling safe to suspend)");
+                return;
+            }
+
+            // ok, we are trying to prolong the suspending handler. Do that here:
+            var now = DateTimeOffset.Now;
+            SuspendingDeferral deferral = null;
+            try
+            {
+                deferral = e.SuspendingOperation.GetDeferral();
+                var delay = (e.SuspendingOperation.Deadline - now) - Buffer;
+                if (delay < TimeSpan.Zero)
+                {
+                    delay = TimeSpan.Zero;
+                }
+                await Task.Delay(delay);
+            }
+            finally
+            {
+                Log.WriteLine("Prolonged Suspending handler, now completing (signaling safe to suspend)");
+                deferral?.Complete();
+            }
         }
 
         void App_Resuming(object sender, object e)

@@ -22,7 +22,7 @@ namespace VoipTasks
 {
     public sealed class CallRtcTask : IBackgroundTask
     {
-        static readonly TimeSpan RequestInterval = TimeSpan.FromSeconds(5.0);
+        static readonly TimeSpan RequestInterval = TimeSpan.FromSeconds(1.0);
 
         BackgroundTaskDeferral _deferral;
         Guid instanceId;
